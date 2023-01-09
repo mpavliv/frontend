@@ -9,6 +9,7 @@ const Delete = (() => {
   const delet = async () => {
     console.log("delete");
     const response = await fetch(`${HOST}:${PORT}/temperature/delete`, {method: 'POST'});
+    
     console.log(response);
   }
 
