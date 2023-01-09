@@ -20,7 +20,7 @@ const Current = ((props) => {
   useEffect(() => {
       const interval = setInterval(() => {
         fetchTemperature();
-    }, 5000);
+    }, 50000);
     return () => clearInterval(interval);
   }, )
 

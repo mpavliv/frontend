@@ -2,35 +2,47 @@ import React, { useState, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 
-const TempChart = (props) => {
+const TempChart = ({host, port, startDate, endDate}) => {
+
   const [temperature, setTemperature] = useState([]);
-  // const [isLoaded, setIsLoaded] = useState(false);
-  // const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log(`${props.host}:${props.port}/temperature?time1=${props.endDate}&time2=${props.endDate}`);
-    // fetchTemperature();
-  }, )
+    console.log('charts');
+    console.log(`startDate ${startDate}`);
+    console.log(`endDate ${endDate}`);
+    console.log(`${host}:${port}/temperature?time1=${startDate}&time2=${endDate}`);
+    fetchTemperature();
+  }, [startDate, endDate])
 
   const fetchTemperature = async () => {
-    const response = await fetch(`${props.host}:${props.port}/temperature?time1=${props.endDate}&time2=${props.endDate}`)
-    response.json().then(res => {
-      let arr = [];
-      for (let key in res) {
-        const temp = new Object();
-        const num = Number(key);
-        const currentDate = new Date(num);
-        temp['key'] = key;
-        const txtDate = ("0" + currentDate.getDate()).slice(-2);
-        const txtMonth = ("0" + (currentDate.getMonth() + 1)).slice(-2);
-        temp['time'] = currentDate.getHours() + ":" + currentDate.getMinutes() + " / " + 
-              txtDate + "." + txtMonth;
-        temp['value'] = res[key];
-        arr.push(temp);
-      }
-      console.log(arr);
-      setTemperature(arr);
-    });
+    if (startDate && endDate) {
+      console.log(startDate);
+      console.log(endDate);
+      const response = 
+          await fetch(`${host}:${port}/temperature?time1=${startDate}&time2=${endDate}`)
+      response.json().then(res => {
+
+        setTemperature(setArray(res));
+      });
+    }
+  }
+
+  function setArray(res){
+    let arr = [];
+    for (let key in res) {
+      const temp = new Object();
+      const num = Number(key);
+      const currentDate = new Date(num);
+      temp['key'] = key;
+      const txtDate = ("0" + currentDate.getDate()).slice(-2);
+      const txtMonth = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+      temp['time'] = currentDate.getHours() + ":" + currentDate.getMinutes() + " / " + 
+            txtDate + "." + txtMonth;
+      temp['value'] = res[key];
+      arr.push(temp);
+    }
+    console.log(arr);
+    return arr;
   }
 
   return (
